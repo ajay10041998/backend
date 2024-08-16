@@ -40,10 +40,10 @@ app.post('/signup',async(request,response)=>{
     if (dbuser===undefined){
         const newUserCreateQuery = `INSERT INTO usercredentials (username,emailid,password) VALUES (?,?,?)`
         const createUser = await db.run(newUserCreateQuery,[username,emailid,hashedPassword])
-        response.send("user created successfully")
+        response.status(200).json({message:"user created successfully"})
     }
     else {
-        response.send("user already created")
+        response.status(400).json({message:"user already created"})
     }
 
 })
