@@ -1,5 +1,7 @@
 const express = require('express');
 const app =express() 
+const cors=require("cors")
+
 const {open} = require('sqlite');
 const sqlite3 = require("sqlite3")
 const path = require("path");
@@ -8,7 +10,8 @@ const bcrypt = require('bcrypt')
 const dbpath = path.join(__dirname,"userauthentication.db")
 const jwt = require("jsonwebtoken")
 app.use(express.json())
-let db=null 
+app.use(cors())
+let db=null
 
 const intializeServerAndDB =async () => {
      try {db = await open ({
