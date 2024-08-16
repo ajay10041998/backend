@@ -5,12 +5,13 @@ const cors=require("cors")
 const {open} = require('sqlite');
 const sqlite3 = require("sqlite3")
 const path = require("path");
-const { request } = require('http');
+
 const bcrypt = require('bcrypt')
 const dbpath = path.join(__dirname,"userauthentication.db")
 const jwt = require("jsonwebtoken")
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
+
 let db=null
 
 const intializeServerAndDB =async () => {
@@ -37,9 +38,8 @@ app.post('/signup',async(request,response)=>{
     const getUser =`SELECT * FROM usercredentials WHERE username=?`
     const dbuser = await db.get(getUser,[username])
     if (dbuser===undefined){
-        const user = `INSERT INTO usercredentials (username,emailid,password) VALUES (?,?,?)`
-        const createUser = await db.run(user,[username,emailid,hashedPassword])
-        const userId = createUser.lastID
+        const newUserCreateQuery = `INSERT INTO usercredentials (username,emailid,password) VALUES (?,?,?)`
+        const createUser = await db.run(newUserCreateQuery,[username,emailid,hashedPassword])
         response.send("user created successfully")
     }
     else {
@@ -64,7 +64,7 @@ app.post('/login',async(request,response)=>{
             
             const payload = {username:username}
             const jwtToken = jwt.sign(payload,"mysecreattoken")
-            response.send(jwtToken)
+            response.send({jwtToken})
 
         }else{
             response.send("invalid password")
